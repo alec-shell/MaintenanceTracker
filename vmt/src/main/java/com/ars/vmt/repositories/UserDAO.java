@@ -1,20 +1,57 @@
+/**
+ * 11/23/2026   Class created.
+ */
+
 package com.ars.vmt.repositories;
 
+import com.ars.vmt.DTO.UserDTO;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+
 
 @Repository
 public class UserDAO {
 
-    public UserDAO getUserByID(int userId, Connection conn) throws SQLException {
+    private static final String USER_ID = "USER_ID";
+    private static final String FIRST_NM = "USER_FIRST_NM";
+    private static final String LAST_NM = "USER_LAST_NM";
+    private static final String EMAIL = "USER_EMAIL";
+    private static final String JOIN_DT = "USER_JOIN_DT";
 
-        try {
+    private final DataSource dataSource;
+    private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
-        } catch {
+    public UserDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
+    public UserDTO getUserById(int userId) throws SQLException {
+        logger.debug("UserDAO.getUserByID: ID = {}", userId);
+        UserDTO userDTO = new UserDTO();
+
+        try (Connection conn =  dataSource.getConnection();
+             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM USER_USERS WHERE USER_ID = ?")) {
+            prepStmt.setInt(1, userId);
+            ResultSet rs = prepStmt.executeQuery();
+
+            while (rs.next()) {
+                userDTO.setId(rs.getInt(USER_ID));
+                userDTO.setFirstName(rs.getString(FIRST_NM));
+                userDTO.setLastName(rs.getString(LAST_NM));
+                userDTO.setEmail(rs.getString(EMAIL));
+                userDTO.setJoinDt(rs.getString(JOIN_DT));
+            }
+        } catch (SQLException e) {
+            logger.error("getUserByID: SQL Exception for ID {} \n Message: {}",  userId, e.getMessage());
+            return null;
         }
+        return userDTO;
     }
 }

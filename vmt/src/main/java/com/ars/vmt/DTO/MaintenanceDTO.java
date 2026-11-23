@@ -26,6 +26,17 @@ public class MaintenanceDTO {
         this.notes = notes;
     }
 
+    public MaintenanceDTO() {
+        maintId = -1;
+        vehId = -1;
+        mileage = -1;
+        date = null;
+        location = null;
+        type = null;
+        cost = null;
+        notes = null;
+    }
+
     public void setMaintId(int maintId) {
         this.maintId = maintId;
     }

@@ -11,7 +11,7 @@ public class RepairDTO {
     private String eventTitle;
     private String date;
     private String location;
-    private double cost;
+    private Double cost;
     private String notes;
 
     public RepairDTO(int repairId, int vehId, int mileage,  String eventTitle, String date,
@@ -24,6 +24,17 @@ public class RepairDTO {
         this.location = location;
         this.cost = cost;
         this.notes = notes;
+    }
+
+    public RepairDTO() {
+        repairId = -1;
+        vehId = -1;
+        mileage = -1;
+        eventTitle = null;
+        date = null;
+        location = null;
+        cost = null;
+        notes = null;
     }
 
     public void setRepairId(int repairId) {

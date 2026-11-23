@@ -26,6 +26,17 @@ public class VehicleDTO {
         this.soldDate = soldDate;
     }
 
+    public VehicleDTO() {
+        vehId = -1;
+        year = -1;
+        vin = null;
+        make = null;
+        model = null;
+        color = null;
+        purchaseDate = null;
+        soldDate = null;
+    }
+
     public void setVehId(int vehId) {
         this.vehId = vehId;
     }

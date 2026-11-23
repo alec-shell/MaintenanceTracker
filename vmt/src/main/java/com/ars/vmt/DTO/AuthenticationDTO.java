@@ -15,6 +15,12 @@ public class AuthenticationDTO {
         this.passHash = passHash;
     }
 
+    public AuthenticationDTO() {
+        userId = -1;
+        email = null;
+        passHash = null;
+    }
+
     public void setUserId(int userId) {
         this.userId = userId;
     }

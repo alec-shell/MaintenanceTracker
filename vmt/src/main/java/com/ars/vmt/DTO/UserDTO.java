@@ -19,6 +19,14 @@ public class UserDTO {
         this.joinDt = joinDt;
     }
 
+    public UserDTO() {
+        userId = -1;
+        firstName = null;
+        lastName = null;
+        email = null;
+        joinDt = null;
+    }
+
     public void setId(int userId) {
         this.userId = userId;
     }
