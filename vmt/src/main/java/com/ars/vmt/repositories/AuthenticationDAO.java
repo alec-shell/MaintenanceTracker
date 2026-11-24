@@ -18,9 +18,11 @@ import java.sql.SQLException;
 @Repository
 public class AuthenticationDAO {
 
+    // DB fields
     private static final String USER_ID = "USER_ID";
     private static final String EMAIL = "USER_EMAIL";
 
+    // class/instance vars
     private final DataSource dataSource;
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationDAO.class);
 
@@ -28,12 +30,13 @@ public class AuthenticationDAO {
         this.dataSource = dataSource;
     }
 
-    public AuthenticationDTO getAuthenticatedUser(String password) throws SQLException {
+    public AuthenticationDTO getAuthenticatedUser(String email, String password) throws SQLException {
         logger.debug("AuthenticationDAO.getUserByPasswordHash: hash = {}",  password);
 
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM USER_USERS WHERE USER_PASSWORD = ?")){
-            prepStmt.setString(1, password);
+             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM USER_USERS WHERE USER_EMAIL = ? AND USER_PASSWORD = ?")){
+            prepStmt.setString(1, email);
+            prepStmt.setString(2, password);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
                 if (rs.next()) {

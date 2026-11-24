@@ -16,6 +16,7 @@ import java.util.ArrayList;
 @Repository
 public class MaintenanceDAO {
 
+    // DB fields
     private static final String MAINT_ID = "MAINT_ID";
     private static final String VEH_ID = "MAINT_VEH_ID";
     private static final String MILEAGE = "MAINT_MLG";
@@ -25,6 +26,7 @@ public class MaintenanceDAO {
     private static final String COST = "MAINT_COST";
     private static final String NOTES = "MAINT_NOTES";
 
+    // class/instance vars
     private final DataSource dataSource;
     private static final Logger logger = LoggerFactory.getLogger(MaintenanceDAO.class);
 
@@ -138,6 +140,8 @@ public class MaintenanceDAO {
     }
 
     private MaintenanceDTO buildMaintDTO(ResultSet rs) throws SQLException {
+        logger.debug("MaintenanceDAO.buildMaintDTO");
+
         MaintenanceDTO maintDTO = new MaintenanceDTO();
         maintDTO.setMaintId(rs.getInt(MAINT_ID));
         maintDTO.setVehId(rs.getInt(VEH_ID));

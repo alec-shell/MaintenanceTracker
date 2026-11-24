@@ -26,7 +26,7 @@ public class RepairDAO {
     private static final String COST = "REP_COST";
     private static final String NOTES = "REP_NOTES";
 
-    // Class/Instance vars
+    // class/instance vars
     private static final Logger logger = LoggerFactory.getLogger(RepairDAO.class);
     private final DataSource dataSource;
 
@@ -139,6 +139,8 @@ public class RepairDAO {
     }
 
     private RepairDTO buildRepairDTO(ResultSet rs) throws SQLException {
+        logger.debug("RepairDAO.buildRepairDTO");
+
         RepairDTO repairDTO = new RepairDTO();
         repairDTO.setRepairId(rs.getInt(REP_ID));
         repairDTO.setVehId(rs.getInt(VEH_ID));

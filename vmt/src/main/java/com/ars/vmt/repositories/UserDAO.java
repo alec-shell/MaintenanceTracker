@@ -19,12 +19,14 @@ import java.sql.SQLException;
 @Repository
 public class UserDAO {
 
+    // DB fields
     private static final String USER_ID = "USER_ID";
     private static final String FIRST_NM = "USER_FIRST_NM";
     private static final String LAST_NM = "USER_LAST_NM";
     private static final String EMAIL = "USER_EMAIL";
     private static final String JOIN_DT = "USER_JOIN_DT";
 
+    // class/instance vars
     private final DataSource dataSource;
     private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
