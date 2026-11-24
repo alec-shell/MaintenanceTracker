@@ -7,18 +7,15 @@ package com.ars.vmt.DTO;
 public class AuthenticationDTO {
     private int userId;
     private String email;
-    private String passHash;
 
     public AuthenticationDTO(int userId, String email, String passHash) {
         this.userId = userId;
         this.email = email;
-        this.passHash = passHash;
     }
 
     public AuthenticationDTO() {
         userId = -1;
         email = null;
-        passHash = null;
     }
 
     public void setUserId(int userId) {
@@ -29,20 +26,12 @@ public class AuthenticationDTO {
         this.email = email;
     }
 
-    public void setPassHash(String passHash) {
-        this.passHash = passHash;
-    }
-
     public int getUserId() {
         return userId;
     }
 
     public String getEmail() {
         return email;
-    }
-
-    public String getPassHash() {
-        return passHash;
     }
 
 }

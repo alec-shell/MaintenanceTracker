@@ -34,24 +34,30 @@ public class UserDAO {
 
     public UserDTO getUserById(int userId) throws SQLException {
         logger.debug("UserDAO.getUserByID: ID = {}", userId);
-        UserDTO userDTO = new UserDTO();
 
         try (Connection conn =  dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM USER_USERS WHERE USER_ID = ?")) {
             prepStmt.setInt(1, userId);
-            ResultSet rs = prepStmt.executeQuery();
 
-            while (rs.next()) {
-                userDTO.setId(rs.getInt(USER_ID));
-                userDTO.setFirstName(rs.getString(FIRST_NM));
-                userDTO.setLastName(rs.getString(LAST_NM));
-                userDTO.setEmail(rs.getString(EMAIL));
-                userDTO.setJoinDt(rs.getString(JOIN_DT));
+            try (ResultSet rs = prepStmt.executeQuery()) {
+                if (rs.next()) {
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setId(rs.getInt(USER_ID));
+                    userDTO.setFirstName(rs.getString(FIRST_NM));
+                    userDTO.setLastName(rs.getString(LAST_NM));
+                    userDTO.setEmail(rs.getString(EMAIL));
+                    userDTO.setJoinDt(rs.getString(JOIN_DT));
+
+                    return userDTO;
+                } else {
+
+                    return null;
+                }
             }
         } catch (SQLException e) {
-            logger.error("getUserByID: SQL Exception for ID {} \n Message: {}",  userId, e.getMessage());
-            return null;
+            logger.error("getUserByID: SQL Exception for ID {} \n",  userId, e);
+            throw e;
         }
-        return userDTO;
     }
+
 }
