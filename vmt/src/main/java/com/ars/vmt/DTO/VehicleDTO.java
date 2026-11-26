@@ -110,4 +110,21 @@ public class VehicleDTO {
         return soldDate;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Vehicle ID: "); sb.append(this.vehId);
+        sb.append("\nUser ID: "); sb.append(this.userId);
+        sb.append("\nYear: "); sb.append(this.year);
+        sb.append("\nVin: "); sb.append(this.vin);
+        sb.append("\nMake: "); sb.append(this.make);
+        sb.append("\nModel: "); sb.append(this.model);
+        sb.append("\nColor: "); sb.append(this.color);
+        sb.append("\nPurchase Date: "); sb.append(this.purchaseDate);
+        sb.append("\nSale Date: "); sb.append(this.soldDate);
+
+        return sb.toString();
+    }
+
 }

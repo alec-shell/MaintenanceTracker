@@ -148,7 +148,7 @@ public class RepairDAO {
         repairDTO.setEventTitle(rs.getString(TITLE));
         repairDTO.setDate(rs.getString(DATE));
         repairDTO.setLocation(rs.getString(LOCATION));
-        repairDTO.setCost(rs.getDouble(COST));
+        repairDTO.setCost(rs.getBigDecimal(COST));
         repairDTO.setNotes(rs.getString(NOTES));
 
         return repairDTO;

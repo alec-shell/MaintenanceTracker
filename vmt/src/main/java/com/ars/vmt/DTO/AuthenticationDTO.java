@@ -34,4 +34,14 @@ public class AuthenticationDTO {
         return email;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Email: "); sb.append(this.email);
+        sb.append("\nUserId: "); sb.append(this.userId);
+
+        return sb.toString();
+    }
+
 }

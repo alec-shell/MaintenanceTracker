@@ -103,4 +103,20 @@ public class RepairDTO {
         return notes;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Repair ID: "); sb.append(this.repairId);
+        sb.append("\nVehicle ID: "); sb.append(this.vehId);
+        sb.append("\nMileage: "); sb.append(this.mileage);
+        sb.append("\nTitle: "); sb.append(this.eventTitle);
+        sb.append("\nDate: "); sb.append(this.date);
+        sb.append("\nLocation: "); sb.append(this.location);
+        sb.append("\nCost: "); sb.append(this.cost);
+        sb.append("\nNotes: "); sb.append(this.notes);
+
+        return sb.toString();
+    }
+
 }

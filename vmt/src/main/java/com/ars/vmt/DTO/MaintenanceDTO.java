@@ -107,6 +107,7 @@ public class MaintenanceDTO {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        
         sb.append("Maintenance ID: "); sb.append(this.maintId);
         sb.append("\nVehicle ID: "); sb.append(this.vehId);
         sb.append("\nMileage: "); sb.append(this.mileage);
@@ -115,7 +116,8 @@ public class MaintenanceDTO {
         sb.append("\nType: "); sb.append(this.type);
         sb.append("\nCost: "); sb.append(this.cost);
         sb.append("\nNotes: "); sb.append(this.notes);
-        
+
         return sb.toString();
     }
+
 }

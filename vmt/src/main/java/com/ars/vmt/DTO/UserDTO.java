@@ -67,4 +67,17 @@ public class UserDTO {
         return joinDt;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("User ID: "); sb.append(this.userId);
+        sb.append("\nFirst Name: "); sb.append(this.firstName);
+        sb.append("\nLast Name: "); sb.append(this.lastName);
+        sb.append("\nEmail: "); sb.append(this.email);
+        sb.append("\nJoin Date: "); sb.append(this.joinDt);
+
+        return sb.toString();
+    }
+
 }
