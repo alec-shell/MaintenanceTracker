@@ -34,11 +34,47 @@ public class MaintenanceDAO {
         this.dataSource = dataSource;
     }
 
+    public long insertMaintDto(MaintenanceDTO maintDTO) throws SQLException {
+        logger.debug("MaintenanceDAO.insertMaintDto");
+
+        String sqlQuery = """
+                INSERT INTO MAINT_MAINTENANCE (
+                MAINT_VEH_ID, MAINT_MLG, MAINT_DT,MAINT_LOC, MAINT_TYPE, MAINT_COST, MAINT_NOTES
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
+            prepStmt.setInt(1, maintDTO.getVehId());
+            prepStmt.setInt(2, maintDTO.getMileage());
+            prepStmt.setDate(3, Date.valueOf(maintDTO.getDate()));
+            prepStmt.setString(4, maintDTO.getLocation());
+            prepStmt.setString(5, maintDTO.getType());
+            prepStmt.setBigDecimal(6, maintDTO.getCost());
+            prepStmt.setString(7, maintDTO.getNotes());
+
+            prepStmt.executeUpdate();
+
+            try (ResultSet rs = prepStmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+
+                return -1;
+            }
+        } catch (SQLException e) {
+            logger.error("insertMaintDto: SQL Exception for {}", maintDTO, e);
+            throw e;
+        }
+    }
+
     public MaintenanceDTO getMaintRcdByMaintId(int maintId) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByMaintId: ID = {}", maintId);
 
+        String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_ID = ?";
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_ID = ?")) {
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
             prepStmt.setInt(1, maintId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
@@ -59,8 +95,10 @@ public class MaintenanceDAO {
     public ArrayList<MaintenanceDTO> getMaintRcdByDate(String date) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByDate: Date = {}", date);
 
+        String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_DATE = ?";
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_DATE = ?")) {
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
             prepStmt.setDate(1, Date.valueOf(date));
 
             try (ResultSet rs = prepStmt.executeQuery()) {
@@ -82,8 +120,10 @@ public class MaintenanceDAO {
     public ArrayList<MaintenanceDTO> getMaintRcdsByVehId(int vehId) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByVehId: ID = {}", vehId);
 
+        String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_VEH_ID = ?";
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_VEH_ID = ?")) {
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
             prepStmt.setInt(1, vehId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
@@ -149,7 +189,7 @@ public class MaintenanceDAO {
         maintDTO.setDate(rs.getString(MAINT_DATE));
         maintDTO.setLocation(rs.getString(LOCATION));
         maintDTO.setType(rs.getString(TYPE));
-        maintDTO.setCost(rs.getDouble(COST));
+        maintDTO.setCost(rs.getBigDecimal(COST));
         maintDTO.setNotes(rs.getString(NOTES));
 
         return maintDTO;

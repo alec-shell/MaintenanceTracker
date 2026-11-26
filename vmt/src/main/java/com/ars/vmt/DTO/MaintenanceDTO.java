@@ -4,6 +4,8 @@
 
 package com.ars.vmt.DTO;
 
+import java.math.BigDecimal;
+
 public class MaintenanceDTO {
     private int maintId;
     private int vehId;
@@ -11,11 +13,11 @@ public class MaintenanceDTO {
     private String date;
     private String location;
     private String type;
-    private Double cost;
+    private BigDecimal cost;
     private String notes;
 
     public MaintenanceDTO(int maintId, int vehId, int mileage, String date,
-                          String location, String type, Double cost, String notes) {
+                          String location, String type, BigDecimal cost, String notes) {
         this.maintId = maintId;
         this.vehId = vehId;
         this.mileage = mileage;
@@ -61,7 +63,7 @@ public class MaintenanceDTO {
         this.type = type;
     }
 
-    public void setCost(Double cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 
@@ -93,7 +95,7 @@ public class MaintenanceDTO {
         return type;
     }
 
-    public Double getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
@@ -101,4 +103,19 @@ public class MaintenanceDTO {
         return notes;
     }
 
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Maintenance ID: "); sb.append(this.maintId);
+        sb.append("\nVehicle ID: "); sb.append(this.vehId);
+        sb.append("\nMileage: "); sb.append(this.mileage);
+        sb.append("\nDate: "); sb.append(this.date);
+        sb.append("\nLocation: "); sb.append(this.location);
+        sb.append("\nType: "); sb.append(this.type);
+        sb.append("\nCost: "); sb.append(this.cost);
+        sb.append("\nNotes: "); sb.append(this.notes);
+        
+        return sb.toString();
+    }
 }
