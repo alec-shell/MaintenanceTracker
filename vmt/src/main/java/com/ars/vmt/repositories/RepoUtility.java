@@ -8,6 +8,11 @@ package com.ars.vmt.repositories;
 
 public class RepoUtility {
 
+    /**
+     * Build a String of comma-separated '?'
+     * @param length int
+     * @return String
+     */
     public static String buildParamsPlaceholders(int length) {
         StringBuilder sb = new StringBuilder();
 

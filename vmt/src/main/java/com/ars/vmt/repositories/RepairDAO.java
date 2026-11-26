@@ -35,12 +35,60 @@ public class RepairDAO {
         this.dataSource = dataSource;
     }
 
-    public RepairDTO getRepRcdByRepId(int repId) throws SQLException {
-        logger.debug("RepairDAO.getRepRcdByRepId: ID = {}",  repId);
+    /**
+     * Insert a new repair record to the database
+     * @param repDto RepairDTO
+     * @return SQL-generated REP_ID or -1 : long
+     * @throws SQLException
+     */
+    public long insertRepRcd(RepairDTO repDto) throws SQLException {
+        logger.debug("RepairDAO.insertRepRcd");
+
+        String sqlQuery = """
+                INSERT INTO REP_REPAIRS (
+                REP_VEH_ID, REP_MLG, REP_TITLE, REP_DT, REP_LOC, REP_COST, REP_NOTES)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
 
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM REP_REPAIRS WHERE REP_ID = ?")) {
-            prepStmt.setInt(1, repId);
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
+            prepStmt.setLong(1, repDto.getVehId());
+            prepStmt.setInt(2, repDto.getMileage());
+            prepStmt.setString(3, repDto.getEventTitle());
+            prepStmt.setDate(4, Date.valueOf(repDto.getDate()));
+            prepStmt.setString(5, repDto.getLocation());
+            prepStmt.setBigDecimal(6, repDto.getCost());
+            prepStmt.setString(7, repDto.getNotes());
+
+            prepStmt.executeUpdate();
+
+            try (ResultSet rs = prepStmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+
+                return -1;
+            }
+        } catch (SQLException e) {
+            logger.error("insertRepRcd SQL Exception for {}", repDto, e);
+            throw e;
+        }
+    }
+
+    /**
+     * Get repair record from the database by repId
+     * @param repId long
+     * @return RepairDTO or NULL
+     * @throws SQLException
+     */
+    public RepairDTO getRepRcdByRepId(long repId) throws SQLException {
+        logger.debug("RepairDAO.getRepRcdByRepId: ID = {}",  repId);
+
+        String sqlQuery = "SELECT * FROM REP_REPAIRS WHERE REP_ID = ?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
+            prepStmt.setLong(1, repId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
                 if (rs.next()) {
@@ -56,11 +104,19 @@ public class RepairDAO {
         }
     }
 
+    /**
+     * Get an ArrayList of RepairDTO objects from the database by date
+     * @param date String
+     * @return ArrayList<RepairDTO>
+     * @throws SQLException
+     */
     public ArrayList<RepairDTO> getRepRcdByDate(String date) throws SQLException {
         logger.debug("RepairDAO.getRepRcdByDt: Date = {}",  date);
 
+        String sqlQuery = "SELECT * FROM REP_REPAIRS WHERE REP_DT = ?";
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM REP_REPAIRS WHERE REP_DT = ?")) {
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
             prepStmt.setDate(1, Date.valueOf(date));
 
             try (ResultSet rs = prepStmt.executeQuery()) {
@@ -79,12 +135,20 @@ public class RepairDAO {
         }
     }
 
-    public ArrayList<RepairDTO> getRepRcdsByVehId(int vehId) throws SQLException {
+    /**
+     * Get an ArrayList of RepairDTO objects from the database by vehId
+     * @param vehId long
+     * @return ArrayList<RepairDTO>
+     * @throws SQLException
+     */
+    public ArrayList<RepairDTO> getRepRcdsByVehId(long vehId) throws SQLException {
         logger.debug("RepairDAO.getRepRcdsByVehId: ID = {}",  vehId);
 
+        String sqlQuery = "SELECT * FROM REP_REPAIRS WHERE REP_VEH_ID = ?";
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM REP_REPAIRS WHERE REP_VEH_ID = ?")) {
-            prepStmt.setInt(1, vehId);
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
+            prepStmt.setLong(1, vehId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
                 ArrayList<RepairDTO> repairDTOs = new ArrayList<>();
@@ -101,7 +165,13 @@ public class RepairDAO {
         }
     }
 
-    public ArrayList<RepairDTO> getRepRcdsByAllVehId(ArrayList<Integer> vehIdList) throws SQLException {
+    /**
+     * Get an ArrayList of RepairDTO objects from the database by an ArrayList of vehicle IDs
+     * @param vehIdList ArrayList<Long>
+     * @return ArrayList<RepairDTO>
+     * @throws SQLException
+     */
+    public ArrayList<RepairDTO> getRepRcdsByAllVehId(ArrayList<Long> vehIdList) throws SQLException {
         logger.debug("RepairDAO.getRepRcdsByAllVehId: IDs = {}",  vehIdList);
 
         ArrayList<RepairDTO> repairDTOs = new ArrayList<>();
@@ -120,7 +190,7 @@ public class RepairDAO {
 
             int paramCnt = 1;
             while (paramCnt <= vehIdList.size()) {
-                prepStmt.setInt(paramCnt, vehIdList.get(paramCnt - 1));
+                prepStmt.setLong(paramCnt, vehIdList.get(paramCnt - 1));
                 paramCnt++;
             }
 
@@ -138,12 +208,18 @@ public class RepairDAO {
         }
     }
 
+    /**
+     * Helper method for building RepairDTO objects from ResultSets
+     * @param rs ResultSet
+     * @return RepairDTO
+     * @throws SQLException
+     */
     private RepairDTO buildRepairDTO(ResultSet rs) throws SQLException {
         logger.debug("RepairDAO.buildRepairDTO");
 
         RepairDTO repairDTO = new RepairDTO();
-        repairDTO.setRepairId(rs.getInt(REP_ID));
-        repairDTO.setVehId(rs.getInt(VEH_ID));
+        repairDTO.setRepairId(rs.getLong(REP_ID));
+        repairDTO.setVehId(rs.getLong(VEH_ID));
         repairDTO.setMileage(rs.getInt(MILEAGE));
         repairDTO.setEventTitle(rs.getString(TITLE));
         repairDTO.setDate(rs.getString(DATE));

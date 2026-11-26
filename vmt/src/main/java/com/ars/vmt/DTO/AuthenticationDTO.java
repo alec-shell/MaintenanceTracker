@@ -5,10 +5,10 @@
 package com.ars.vmt.DTO;
 
 public class AuthenticationDTO {
-    private int userId;
+    private long userId;
     private String email;
 
-    public AuthenticationDTO(int userId, String email, String passHash) {
+    public AuthenticationDTO(long userId, String email, String passHash) {
         this.userId = userId;
         this.email = email;
     }
@@ -18,7 +18,7 @@ public class AuthenticationDTO {
         email = null;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -26,7 +26,7 @@ public class AuthenticationDTO {
         this.email = email;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 

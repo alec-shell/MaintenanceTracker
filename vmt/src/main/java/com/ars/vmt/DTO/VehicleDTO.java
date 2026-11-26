@@ -5,8 +5,8 @@
 package com.ars.vmt.DTO;
 
 public class VehicleDTO {
-    private int vehId;
-    private int userId;
+    private long vehId;
+    private long userId;
     private int year;
     private String vin;
     private String make;
@@ -15,9 +15,10 @@ public class VehicleDTO {
     private String purchaseDate;
     private String soldDate;
 
-    public VehicleDTO(int vehId, int year, String vin, String make, String model,
+    public VehicleDTO(long vehId, long userId, int year, String vin, String make, String model,
                       String color, String purchaseDate, String soldDate) {
         this.vehId = vehId;
+        this.userId = userId;
         this.year = year;
         this.vin = vin;
         this.make = make;
@@ -29,6 +30,7 @@ public class VehicleDTO {
 
     public VehicleDTO() {
         vehId = -1;
+        userId = -1;
         year = -1;
         vin = null;
         make = null;
@@ -38,11 +40,11 @@ public class VehicleDTO {
         soldDate = null;
     }
 
-    public void setVehId(int vehId) {
+    public void setVehId(long vehId) {
         this.vehId = vehId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -74,11 +76,11 @@ public class VehicleDTO {
         this.soldDate = soldDate;
     }
 
-    public int getVehId() {
+    public long getVehId() {
         return vehId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 

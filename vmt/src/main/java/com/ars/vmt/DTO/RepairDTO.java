@@ -7,8 +7,8 @@ package com.ars.vmt.DTO;
 import java.math.BigDecimal;
 
 public class RepairDTO {
-    private int repairId;
-    private int vehId;
+    private long repairId;
+    private long vehId;
     private int mileage;
     private String eventTitle;
     private String date;
@@ -16,7 +16,7 @@ public class RepairDTO {
     private BigDecimal cost;
     private String notes;
 
-    public RepairDTO(int repairId, int vehId, int mileage,  String eventTitle, String date,
+    public RepairDTO(long repairId, long vehId, int mileage,  String eventTitle, String date,
                      String location, BigDecimal cost, String notes) {
         this.repairId = repairId;
         this.vehId = vehId;
@@ -39,11 +39,11 @@ public class RepairDTO {
         notes = null;
     }
 
-    public void setRepairId(int repairId) {
+    public void setRepairId(long repairId) {
         this.repairId = repairId;
     }
 
-    public void setVehId(int vehId) {
+    public void setVehId(long vehId) {
         this.vehId = vehId;
     }
 
@@ -71,11 +71,11 @@ public class RepairDTO {
         this.notes = notes;
     }
 
-    public int getRepairId() {
+    public long getRepairId() {
         return repairId;
     }
 
-    public int getVehId() {
+    public long getVehId() {
         return vehId;
     }
 

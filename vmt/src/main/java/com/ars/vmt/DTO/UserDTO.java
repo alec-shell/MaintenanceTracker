@@ -5,13 +5,13 @@
 package com.ars.vmt.DTO;
 
 public class UserDTO {
-    private int userId;
+    private long userId;
     private String firstName;
     private String lastName;
     private String email;
     private String joinDt;
 
-    public UserDTO(int userId, String firstName, String lastName, String email, String joinDt) {
+    public UserDTO(long userId, String firstName, String lastName, String email, String joinDt) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -27,7 +27,7 @@ public class UserDTO {
         joinDt = null;
     }
 
-    public void setId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -47,7 +47,7 @@ public class UserDTO {
         this.joinDt = joinDt;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 

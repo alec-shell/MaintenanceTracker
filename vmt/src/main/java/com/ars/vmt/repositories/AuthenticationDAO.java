@@ -30,11 +30,20 @@ public class AuthenticationDAO {
         this.dataSource = dataSource;
     }
 
+    /**
+     * Validate user credentials on sign-in
+     * @param email String
+     * @param password String
+     * @return AuthenticationDTO or NULL
+     * @throws SQLException
+     */
     public AuthenticationDTO getAuthenticatedUser(String email, String password) throws SQLException {
         logger.debug("AuthenticationDAO.getUserByPasswordHash: hash = {}",  password);
 
+        String sqlQuery = "SELECT * FROM USER_USERS WHERE USER_EMAIL = ? AND USER_PASSWORD = ?";
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM USER_USERS WHERE USER_EMAIL = ? AND USER_PASSWORD = ?")){
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)){
             prepStmt.setString(1, email);
             prepStmt.setString(2, password);
 

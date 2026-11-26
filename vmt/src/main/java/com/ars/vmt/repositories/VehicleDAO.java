@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 @Repository
@@ -38,12 +35,59 @@ public class VehicleDAO {
         this.dataSource = dataSource;
     }
 
-    public VehicleDTO getVehicleByVehId(int vehId) throws SQLException {
+    /**
+     * Insert a new vehicle record into the database
+     * @param vehDTO VehicleDTO
+     * @return SQL-generated VEH_ID or -1 : long
+     */
+    public long insertVehRcd(VehicleDTO vehDTO) throws SQLException{
+        logger.debug("VehicleDAO.insertVehRcd");
+
+        String sqlQuery = """
+                INSERT INTO VEH_VEHICLES
+                (VEH_USER_ID, VEH_YEAR, VEH_VIN, VEH_MAKE, VEH_MODEL, VEH_COLOR, PURCHASE_DT, SOLD_DT)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """;
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            prepStmt.setLong(1, vehDTO.getUserId());
+            prepStmt.setInt(2, vehDTO.getYear());
+            prepStmt.setString(3, vehDTO.getVin());
+            prepStmt.setString(4, vehDTO.getMake());
+            prepStmt.setString(5, vehDTO.getModel());
+            prepStmt.setString(6, vehDTO.getColor());
+            prepStmt.setDate(7, Date.valueOf(vehDTO.getPurchaseDate()));
+            prepStmt.setDate(8, Date.valueOf(vehDTO.getSoldDate()));
+
+            prepStmt.executeUpdate();
+
+            try (ResultSet rs = prepStmt.getGeneratedKeys()) {
+                if (rs.next()) {
+
+                    return rs.getLong(1);
+                }
+
+                return -1;
+            }
+        } catch (SQLException e) {
+            logger.error("insertVehRcd: SQLException for {}", vehDTO, e);
+            throw e;
+        }
+    }
+
+    /**
+     * Get a VehicleDTO from the database by vehId
+     * @param vehId long
+     * @return VehicleDTO or NULL
+     * @throws SQLException
+     */
+    public VehicleDTO getVehicleByVehId(long vehId) throws SQLException {
         logger.debug("VehicleDAO.getVehicleByVehId: Id = {}",  vehId);
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM VEH_VEHICLES WHERE VEH_ID = ?")) {
-            prepStmt.setInt(1, vehId);
+            prepStmt.setLong(1, vehId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
                 if (rs.next()) {
@@ -59,6 +103,12 @@ public class VehicleDAO {
         }
     }
 
+    /**
+     * Get a VehicleDTO from the database by vin
+     * @param vin String
+     * @return VehicleDTO or NULL
+     * @throws SQLException
+     */
     public VehicleDTO getVehicleByVin(String vin) throws SQLException {
         logger.debug("VehicleDAO.getVehicleByVin: VIN = {}",  vin);
 
@@ -80,12 +130,18 @@ public class VehicleDAO {
         }
     }
 
-    public ArrayList<VehicleDTO> getVehiclesByUserId(int userId) throws SQLException {
+    /**
+     * Get an ArrayList of VehicleDTO objects from the database by userId
+     * @param userId long
+     * @return ArrayList<VehicleDTO>
+     * @throws SQLException
+     */
+    public ArrayList<VehicleDTO> getVehiclesByUserId(long userId) throws SQLException {
         logger.debug("VehicleDAO.getVehiclesByUserId: UserId = {}",  userId);
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM VEH_VEHICLES WHERE VEH_USER_ID = ?")) {
-            prepStmt.setInt(1, userId);
+            prepStmt.setLong(1, userId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
                 ArrayList<VehicleDTO> vehDTOs = new ArrayList<>();
@@ -102,12 +158,18 @@ public class VehicleDAO {
         }
     }
 
-    private VehicleDTO buildVehicleDTO(ResultSet rs) throws SQLException{
+    /**
+     * Helper method for building VehicleDTO objects from a ResultSet
+     * @param rs ResultSet
+     * @return VehicleDTO
+     * @throws SQLException
+     */
+    private VehicleDTO buildVehicleDTO(ResultSet rs) throws SQLException {
         logger.debug("VehicleDAO.buildVehicleDTO");
 
         VehicleDTO vehDTO = new VehicleDTO();
-        vehDTO.setVehId(rs.getInt(VEH_ID));
-        vehDTO.setUserId(rs.getInt(USER_ID));
+        vehDTO.setVehId(rs.getLong(VEH_ID));
+        vehDTO.setUserId(rs.getLong(USER_ID));
         vehDTO.setYear(rs.getInt(YEAR));
         vehDTO.setVin(rs.getString(VIN));
         vehDTO.setMake(rs.getString(MAKE));

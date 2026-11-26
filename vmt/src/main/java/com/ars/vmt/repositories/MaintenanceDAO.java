@@ -34,8 +34,14 @@ public class MaintenanceDAO {
         this.dataSource = dataSource;
     }
 
-    public long insertMaintDto(MaintenanceDTO maintDTO) throws SQLException {
-        logger.debug("MaintenanceDAO.insertMaintDto");
+    /**
+     * Insert a new maintenance record to the database
+     * @param maintDto MaintenanceDTO
+     * @return SQL-generated MAINT_ID or -1 : long
+     * @throws SQLException
+     */
+    public long insertMaintRcd(MaintenanceDTO maintDto) throws SQLException {
+        logger.debug("MaintenanceDAO.insertMaintRcd");
 
         String sqlQuery = """
                 INSERT INTO MAINT_MAINTENANCE (
@@ -45,13 +51,13 @@ public class MaintenanceDAO {
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
-            prepStmt.setInt(1, maintDTO.getVehId());
-            prepStmt.setInt(2, maintDTO.getMileage());
-            prepStmt.setDate(3, Date.valueOf(maintDTO.getDate()));
-            prepStmt.setString(4, maintDTO.getLocation());
-            prepStmt.setString(5, maintDTO.getType());
-            prepStmt.setBigDecimal(6, maintDTO.getCost());
-            prepStmt.setString(7, maintDTO.getNotes());
+            prepStmt.setLong(1, maintDto.getVehId());
+            prepStmt.setInt(2, maintDto.getMileage());
+            prepStmt.setDate(3, Date.valueOf(maintDto.getDate()));
+            prepStmt.setString(4, maintDto.getLocation());
+            prepStmt.setString(5, maintDto.getType());
+            prepStmt.setBigDecimal(6, maintDto.getCost());
+            prepStmt.setString(7, maintDto.getNotes());
 
             prepStmt.executeUpdate();
 
@@ -63,19 +69,25 @@ public class MaintenanceDAO {
                 return -1;
             }
         } catch (SQLException e) {
-            logger.error("insertMaintDto: SQL Exception for {}", maintDTO, e);
+            logger.error("insertMaintDto: SQL Exception for {}", maintDto, e);
             throw e;
         }
     }
 
-    public MaintenanceDTO getMaintRcdByMaintId(int maintId) throws SQLException {
+    /**
+     * Returns a MaintenanceDTO from the database by maintId
+     * @param maintId long
+     * @return MaintenanceDTO or NULL
+     * @throws SQLException
+     */
+    public MaintenanceDTO getMaintRcdByMaintId(long maintId) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByMaintId: ID = {}", maintId);
 
         String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_ID = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
-            prepStmt.setInt(1, maintId);
+            prepStmt.setLong(1, maintId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
 
@@ -92,6 +104,12 @@ public class MaintenanceDAO {
         }
     }
 
+    /**
+     * Get ArrayList of MaintenanceDTO objects from the database by date
+     * @param date String
+     * @return ArrayList<MaintenanceDTO>
+     * @throws SQLException
+     */
     public ArrayList<MaintenanceDTO> getMaintRcdByDate(String date) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByDate: Date = {}", date);
 
@@ -117,14 +135,20 @@ public class MaintenanceDAO {
         }
     }
 
-    public ArrayList<MaintenanceDTO> getMaintRcdsByVehId(int vehId) throws SQLException {
+    /**
+     * Get ArrayList of MaintenanceDTO objects from the database by vehId
+     * @param vehId long
+     * @return ArrayList<MaintenanceDTO>
+     * @throws SQLException
+     */
+    public ArrayList<MaintenanceDTO> getMaintRcdsByVehId(long vehId) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByVehId: ID = {}", vehId);
 
         String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_VEH_ID = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
-            prepStmt.setInt(1, vehId);
+            prepStmt.setLong(1, vehId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
                 ArrayList<MaintenanceDTO> maintDTOs = new ArrayList<>();
@@ -142,7 +166,13 @@ public class MaintenanceDAO {
         }
     }
 
-    public ArrayList<MaintenanceDTO> getMaintRcdsByAllVehId(ArrayList<Integer> vehIdList) throws SQLException {
+    /**
+     * Get ArrayList of MaintenanceDTO objects from the database by an ArrayList of vehIds
+     * @param vehIdList ArrayList<Long>
+     * @return ArrayList<MaintenanceDTO>
+     * @throws SQLException
+     */
+    public ArrayList<MaintenanceDTO> getMaintRcdsByAllVehId(ArrayList<Long> vehIdList) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByAllVehId: IDs = {}", vehIdList);
 
         ArrayList<MaintenanceDTO> maintDTOs = new ArrayList<>();
@@ -161,7 +191,7 @@ public class MaintenanceDAO {
 
             int paramCnt = 1;
             while (paramCnt <= vehIdList.size()) {
-                prepStmt.setInt(paramCnt, vehIdList.get(paramCnt - 1));
+                prepStmt.setLong(paramCnt, vehIdList.get(paramCnt - 1));
                 paramCnt++;
             }
 
@@ -179,12 +209,18 @@ public class MaintenanceDAO {
         }
     }
 
+    /**
+     * Helper method for building MaintenanceDTO objects from ResultSet rows
+     * @param rs ResultSet
+     * @return MaintenanceDTO
+     * @throws SQLException
+     */
     private MaintenanceDTO buildMaintDTO(ResultSet rs) throws SQLException {
         logger.debug("MaintenanceDAO.buildMaintDTO");
 
         MaintenanceDTO maintDTO = new MaintenanceDTO();
-        maintDTO.setMaintId(rs.getInt(MAINT_ID));
-        maintDTO.setVehId(rs.getInt(VEH_ID));
+        maintDTO.setMaintId(rs.getLong(MAINT_ID));
+        maintDTO.setVehId(rs.getLong(VEH_ID));
         maintDTO.setMileage(rs.getInt(MILEAGE));
         maintDTO.setDate(rs.getString(MAINT_DATE));
         maintDTO.setLocation(rs.getString(LOCATION));
