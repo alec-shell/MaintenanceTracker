@@ -84,7 +84,7 @@ public class RepairDAO {
     public RepairDTO getRepRcdByRepId(long repId) throws SQLException {
         logger.debug("RepairDAO.getRepRcdByRepId: ID = {}",  repId);
 
-        String sqlQuery = "SELECT * FROM REP_REPAIRS WHERE REP_ID = ?";
+        String sqlQuery = "SELECT * FROM REP_REPAIRS WHERE " + REP_ID + " = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
@@ -113,7 +113,7 @@ public class RepairDAO {
     public ArrayList<RepairDTO> getRepRcdByDate(String date) throws SQLException {
         logger.debug("RepairDAO.getRepRcdByDt: Date = {}",  date);
 
-        String sqlQuery = "SELECT * FROM REP_REPAIRS WHERE REP_DT = ?";
+        String sqlQuery = "SELECT * FROM REP_REPAIRS WHERE " + DATE + " = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
@@ -144,7 +144,7 @@ public class RepairDAO {
     public ArrayList<RepairDTO> getRepRcdsByVehId(long vehId) throws SQLException {
         logger.debug("RepairDAO.getRepRcdsByVehId: ID = {}",  vehId);
 
-        String sqlQuery = "SELECT * FROM REP_REPAIRS WHERE REP_VEH_ID = ?";
+        String sqlQuery = "SELECT * FROM REP_REPAIRS WHERE " + VEH_ID + " = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
@@ -181,7 +181,8 @@ public class RepairDAO {
         }
 
         StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("SELECT * FROM REP_REPAIRS WHERE REP_VEH_ID IN (");
+        sqlQuery.append("SELECT * FROM REP_REPAIRS WHERE "); sqlQuery.append(VEH_ID);
+        sqlQuery.append(" IN (");
         sqlQuery.append(RepoUtility.buildParamsPlaceholders(vehIdList.size()));
         sqlQuery.append(")");
 

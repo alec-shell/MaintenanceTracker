@@ -45,7 +45,7 @@ public class MaintenanceDAO {
 
         String sqlQuery = """
                 INSERT INTO MAINT_MAINTENANCE (
-                MAINT_VEH_ID, MAINT_MLG, MAINT_DT,MAINT_LOC, MAINT_TYPE, MAINT_COST, MAINT_NOTES
+                MAINT_VEH_ID, MAINT_MLG, MAINT_DT, MAINT_LOC, MAINT_TYPE, MAINT_COST, MAINT_NOTES
                 ) VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
 
@@ -83,7 +83,7 @@ public class MaintenanceDAO {
     public MaintenanceDTO getMaintRcdByMaintId(long maintId) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByMaintId: ID = {}", maintId);
 
-        String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_ID = ?";
+        String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE " + MAINT_ID + " = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
@@ -113,7 +113,7 @@ public class MaintenanceDAO {
     public ArrayList<MaintenanceDTO> getMaintRcdByDate(String date) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByDate: Date = {}", date);
 
-        String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_DATE = ?";
+        String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE " + MAINT_DATE + " = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
@@ -144,7 +144,7 @@ public class MaintenanceDAO {
     public ArrayList<MaintenanceDTO> getMaintRcdsByVehId(long vehId) throws SQLException {
         logger.debug("MaintenanceDAO.getMaintRcdByVehId: ID = {}", vehId);
 
-        String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_VEH_ID = ?";
+        String sqlQuery = "SELECT * FROM MAINT_MAINTENANCE WHERE " + VEH_ID + " = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
@@ -182,7 +182,8 @@ public class MaintenanceDAO {
         }
 
         StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("SELECT * FROM MAINT_MAINTENANCE WHERE MAINT_VEH_ID IN (");
+        sqlQuery.append("SELECT * FROM MAINT_MAINTENANCE WHERE "); sqlQuery.append(VEH_ID);
+        sqlQuery.append(" IN (");
         sqlQuery.append(RepoUtility.buildParamsPlaceholders(vehIdList.size()));
         sqlQuery.append(")");
 

@@ -51,14 +51,18 @@ public class VehicleDAO {
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery, PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+            Date purchDate = vehDTO.getPurchaseDate() != null ? Date.valueOf(vehDTO.getPurchaseDate()) : null;
+            Date soldDate = vehDTO.getSoldDate() != null? Date.valueOf(vehDTO.getSoldDate()) : null;
+
             prepStmt.setLong(1, vehDTO.getUserId());
             prepStmt.setInt(2, vehDTO.getYear());
             prepStmt.setString(3, vehDTO.getVin());
             prepStmt.setString(4, vehDTO.getMake());
             prepStmt.setString(5, vehDTO.getModel());
             prepStmt.setString(6, vehDTO.getColor());
-            prepStmt.setDate(7, Date.valueOf(vehDTO.getPurchaseDate()));
-            prepStmt.setDate(8, Date.valueOf(vehDTO.getSoldDate()));
+            prepStmt.setDate(7, purchDate);
+            prepStmt.setDate(8, soldDate);
 
             prepStmt.executeUpdate();
 
@@ -85,8 +89,9 @@ public class VehicleDAO {
     public VehicleDTO getVehicleByVehId(long vehId) throws SQLException {
         logger.debug("VehicleDAO.getVehicleByVehId: Id = {}",  vehId);
 
+        String sqlQuery = "SELECT * FROM VEH_VEHICLES WHERE " + VEH_ID + " = ?";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM VEH_VEHICLES WHERE VEH_ID = ?")) {
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
             prepStmt.setLong(1, vehId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
@@ -112,8 +117,10 @@ public class VehicleDAO {
     public VehicleDTO getVehicleByVin(String vin) throws SQLException {
         logger.debug("VehicleDAO.getVehicleByVin: VIN = {}",  vin);
 
+        String sqlQuery = "SELECT * FROM VEH_VEHICLES WHERE " + VIN + " = ?";
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM VEH_VEHICLES WHERE VEH_VIN = ?")) {
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
             prepStmt.setString(1, vin);
 
             try (ResultSet rs = prepStmt.executeQuery()) {
@@ -139,8 +146,9 @@ public class VehicleDAO {
     public ArrayList<VehicleDTO> getVehiclesByUserId(long userId) throws SQLException {
         logger.debug("VehicleDAO.getVehiclesByUserId: UserId = {}",  userId);
 
+        String sqlQuery = "SELECT * FROM VEH_VEHICLES WHERE " + USER_ID + " = ?";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement("SELECT * FROM VEH_VEHICLES WHERE VEH_USER_ID = ?")) {
+             PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
             prepStmt.setLong(1, userId);
 
             try (ResultSet rs = prepStmt.executeQuery()) {

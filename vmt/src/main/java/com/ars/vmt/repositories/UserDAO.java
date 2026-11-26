@@ -80,7 +80,7 @@ public class UserDAO {
     public UserDTO getUserById(long userId) throws SQLException {
         logger.debug("UserDAO.getUserByID: ID = {}", userId);
 
-        String sqlQuery = "SELECT * FROM USER_USERS WHERE USER_ID = ?";
+        String sqlQuery = "SELECT * FROM USER_USERS WHERE " + USER_ID + " = ?";
 
         try (Connection conn =  dataSource.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sqlQuery)) {
@@ -89,6 +89,7 @@ public class UserDAO {
             try (ResultSet rs = prepStmt.executeQuery()) {
                 if (rs.next()) {
                     UserDTO userDTO = new UserDTO();
+
                     userDTO.setUserId(rs.getLong(USER_ID));
                     userDTO.setFirstName(rs.getString(FIRST_NM));
                     userDTO.setLastName(rs.getString(LAST_NM));
